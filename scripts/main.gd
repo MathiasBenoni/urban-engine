@@ -6,18 +6,24 @@ var brake = false
 
 @onready var screen_size = get_viewport().get_visible_rect().size
 
-# Called when the node enters the scene tree for the first time.
+func make_road():
+	var road_scene = preload("res://scenes/road.tscn")
+	var road = road_scene.instantiate()
+	add_child(road)
+
 func _ready() -> void:
-	pass # Replace with function body.
+	make_road()
+	
+	
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
 	if $road.position.y >= screen_size.y:
 		print("HALLO")
 	
-	print(main_speed)
+	
+	
+	#print(main_speed)
 	
 	
 	

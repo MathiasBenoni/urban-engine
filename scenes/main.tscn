@@ -15,4 +15,5 @@ position = Vector2(268, 176)
 position = Vector2(489, 184)
 
 [node name="road" parent="." instance=ExtResource("4_jyhfs")]
+z_index = -1
 position = Vector2(636, 0)
