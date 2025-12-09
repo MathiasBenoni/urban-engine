@@ -1,10 +1,9 @@
 extends Node2D
 
+var main_speed := 10.0
 
 @onready var map := $Sprite2D
-
 @export var stepper := 50.0
-
 
 var brake = false
 
@@ -17,14 +16,20 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
-	
+	print(main_speed)
 	
 	if brake == true:
-		map.position.y += stepper * delta * 0.2
+		map.position.y += stepper * delta * 0.2 * main_speed
+		
+		if main_speed >= 1:
+			main_speed -= 10 * delta
 	else:
-		map.position.y += stepper * delta
+		
+		main_speed += 10 * delta
+		
+		
+		map.position.y += stepper * main_speed * delta
 	if Input.is_action_pressed("brake"):
 		brake = true
-		print("BRAKE")
 	else:
 		brake = false
