@@ -1,20 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://dt7tmqrk6vt"]
 
 [ext_resource type="Script" uid="uid://bfr0ac0m4h11" path="res://scripts/main.gd" id="1_jyhfs"]
-[ext_resource type="Texture2D" uid="uid://csdjyvtp2x2ij" path="res://icon.svg" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://bs2hucd20aekb" path="res://scenes/car.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://cbcw40y62pg6x" path="res://scenes/player.tscn" id="3_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://hlpvc5xnixpw" path="res://scenes/road.tscn" id="4_jyhfs"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_jyhfs")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(548.5, -1501.5001)
-scale = Vector2(9.5703125, 41.601566)
-texture = ExtResource("1_o5qli")
 
 [node name="car" parent="." instance=ExtResource("2_sugp2")]
 position = Vector2(268, 176)
 
 [node name="player" parent="." instance=ExtResource("3_jyhfs")]
 position = Vector2(489, 184)
+
+[node name="road" parent="." instance=ExtResource("4_jyhfs")]
+position = Vector2(636, 0)

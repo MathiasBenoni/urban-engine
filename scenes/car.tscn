@@ -6,6 +6,7 @@
 size = Vector2(82, 83)
 
 [node name="car" type="CharacterBody2D"]
+motion_mode = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_c35m8")

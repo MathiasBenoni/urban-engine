@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://hlpvc5xnixpw"]
+
+[ext_resource type="Script" uid="uid://ddbjq0lhpyc40" path="res://scripts/road.gd" id="1_my2y2"]
+[ext_resource type="SpriteFrames" uid="uid://d25p64au0nvpl" path="res://scenes/road.tres" id="2_fy6l0"]
+
+[node name="road" type="Node2D"]
+script = ExtResource("1_my2y2")
+
+[node name="sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(40, 40)
+sprite_frames = ExtResource("2_fy6l0")
