@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dt7tmqrk6vt"]
+[gd_scene load_steps=4 format=3 uid="uid://dt7tmqrk6vt"]
 
 [ext_resource type="Script" uid="uid://bfr0ac0m4h11" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://bs2hucd20aekb" path="res://scenes/car.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://cbcw40y62pg6x" path="res://scenes/player.tscn" id="3_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://hlpvc5xnixpw" path="res://scenes/road.tscn" id="4_jyhfs"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_jyhfs")
@@ -13,7 +12,3 @@ position = Vector2(268, 176)
 
 [node name="player" parent="." instance=ExtResource("3_jyhfs")]
 position = Vector2(489, 184)
-
-[node name="road" parent="." instance=ExtResource("4_jyhfs")]
-z_index = -1
-position = Vector2(636, 0)

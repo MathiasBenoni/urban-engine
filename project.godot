@@ -10,10 +10,14 @@ config_version=5
 
 [application]
 
-config/name="stop for traffic"
+config/name="urban-engine"
 run/main_scene="uid://dt7tmqrk6vt"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Globals="*res://scripts/globals.gd"
 
 [display]
 
