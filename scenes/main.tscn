@@ -21,10 +21,10 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="car" parent="." instance=ExtResource("2_sugp2")]
-position = Vector2(268, 176)
+position = Vector2(-177, 2016)
 
 [node name="player" parent="." instance=ExtResource("3_jyhfs")]
-position = Vector2(489, 184)
+position = Vector2(247, 2026)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, 800)
+position = Vector2(0, 1600)
