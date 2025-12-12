@@ -4,8 +4,8 @@
 [ext_resource type="SpriteFrames" uid="uid://d25p64au0nvpl" path="res://scenes/road.tres" id="2_fy6l0"]
 
 [node name="road" type="Node2D"]
+scale = Vector2(40, 40)
 script = ExtResource("1_my2y2")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(40, 40)
 sprite_frames = ExtResource("2_fy6l0")

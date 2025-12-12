@@ -8,26 +8,29 @@ var brake = false
 var road_list = []
 
 
-func make_road(x, y):
+func make_road():
 	var road_scene = preload("res://scenes/road.tscn")
 	var road = road_scene.instantiate()
-	road.position = Vector2(x, y)
+	road.position.x = 0
+	road.position.y = -235
 	road_list.append(road)
+	
 	add_child(road)
-
+	
 func _ready() -> void:
-	make_road(0, 0)
+	make_road()
 	
-	
+
 
 func _process(delta: float) -> void:
-	if road_list[-1].position.y >= screen_size.y:
+	
+	if road_list[-1].position.y >= screen_size.y + 235:
 		print("Spawn road")
-		make_road(road_list[-1].position.y + 10, 0)
+		make_road()
+		road_list.pop_front()
 	
 	
-	
-	print(Globals.main_speed)
+	#print(Globals.main_speed)
 	
 	if brake == true:
 		if Globals.main_speed >= 0:
