@@ -10,15 +10,15 @@ var roads_made := 0
 
 func generate_pattern(length) -> Array:
 	var pattern = []
-	var zeros_since_last_one = 20  # Start at 20 so first element can be a 1
+	var zeros_since_last_one = 20
 	
 	for i in range(length):
-		# Can only place a 1 if we've had at least 20 zeros since the last 1
+		
 		if zeros_since_last_one >= 20:
 			# Randomly decide to place a 1 (30% chance)
 			if randf() > 0.7:
 				pattern.append(1)
-				zeros_since_last_one = 0  # Reset counter
+				zeros_since_last_one = 0 
 			else:
 				pattern.append(0)
 				zeros_since_last_one += 1
@@ -60,9 +60,7 @@ func _process(delta: float) -> void:
 	
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
-		
 		make_road()
-	
 	while road_list.size() > 0 and road_list[0].position.y >= 4000:
 		
 		var old_road = road_list.pop_front()
