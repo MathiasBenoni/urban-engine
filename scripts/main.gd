@@ -1,7 +1,7 @@
 extends Node2D
 var brake = false
 var accel := 250.0  
-var max_speed := 30000.0  
+var max_speed := 10000.0
 var brake_force := 1000.0
 @onready var screen_size = get_viewport().get_visible_rect().size
 var road_list = []
