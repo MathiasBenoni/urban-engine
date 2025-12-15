@@ -33,9 +33,11 @@ position = Vector2(0, 1600)
 
 [node name="ColorRect" type="ColorRect" parent="viewport"]
 z_index = -1
-offset_right = 224.0
-offset_bottom = 137.0
-color = Color(0, 0, 0, 1)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 140.0
+grow_horizontal = 2
+color = Color(0, 0, 0, 0.65882355)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="viewport"]
 anchors_preset = -1
@@ -49,3 +51,17 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 100
 text = "Test"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="viewport"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="total" type="Label" parent="viewport/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 100
+text = "0"

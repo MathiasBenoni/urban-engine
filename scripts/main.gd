@@ -8,6 +8,7 @@ var road_list = []
 var roads_made := 0
 
 @onready var meters = $viewport/HBoxContainer/meters
+@onready var total = $viewport/HBoxContainer2/total
 
 func generate_pattern(length) -> Array:
 	var pattern = []
@@ -57,7 +58,7 @@ func make_road():
 
 func update_meters():
 	var count = 0
-	var index = roads_made - 2
+	var index = roads_made - 2 # Offset for moved camera
 	while index < pattern.size():
 		
 		if pattern[index] == 1:
@@ -66,7 +67,9 @@ func update_meters():
 		index += 1
 	
 	meters.text = str(count)
+	total.text = str(int(total.text) + 1)
 
+	
 func _ready() -> void:
 	make_road()
 	update_meters()
@@ -100,7 +103,8 @@ func _process(delta: float) -> void:
 			Globals.main_speed = max_speed
 		
 	if Input.is_action_pressed("brake"):
-		brake = true
 		print(Globals.main_speed)
+		brake = true
+		
 	else:
 		brake = false
