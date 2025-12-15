@@ -7,6 +7,7 @@ var brake_force := 1000.0
 var road_list = []
 var roads_made := 0
 
+@onready var meters = $viewport/HBoxContainer/meters
 
 func generate_pattern(length) -> Array:
 	var pattern = []
@@ -54,18 +55,34 @@ func make_road():
 
 
 
+func update_meters():
+	var count = 0
+	var index = roads_made - 2
+	while index < pattern.size():
+		
+		if pattern[index] == 1:
+			break
+		count += 1
+		index += 1
+	
+	meters.text = str(count)
+
 func _ready() -> void:
 	make_road()
+	update_meters()
 	
 func _process(delta: float) -> void:
+	
 	
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
 		make_road()
+		update_meters()
 	while road_list.size() > 0 and road_list[0].position.y >= 4000:
 		
 		var old_road = road_list.pop_front()
 		old_road.queue_free()
+	
 	
 	
 	if brake == true:

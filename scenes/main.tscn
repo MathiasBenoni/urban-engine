@@ -7,10 +7,10 @@
 [node name="main" type="Node2D"]
 script = ExtResource("1_jyhfs")
 
-[node name="viewport" type="CanvasLayer" parent="."]
+[node name="background" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="ColorRect" type="ColorRect" parent="viewport"]
+[node name="ColorRect" type="ColorRect" parent="background"]
 z_index = -6
 z_as_relative = false
 anchors_preset = 15
@@ -28,3 +28,24 @@ position = Vector2(247, 2026)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 1600)
+
+[node name="viewport" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="viewport"]
+z_index = -1
+offset_right = 224.0
+offset_bottom = 137.0
+color = Color(0, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="viewport"]
+anchors_preset = -1
+anchor_right = 0.259375
+anchor_bottom = 0.085625
+offset_right = -292.0
+offset_bottom = -97.0
+metadata/_edit_use_anchors_ = true
+
+[node name="meters" type="Label" parent="viewport/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Test"
