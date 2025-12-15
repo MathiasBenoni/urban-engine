@@ -40,6 +40,10 @@ func make_road():
 	
 	if roads_made < pattern.size() and pattern[roads_made] == 1:
 		road.get_node("sprite").play("intersection")
+	
+	elif roads_made >= pattern.size():
+		pattern = generate_pattern(100)
+		roads_made = 0
 	else:
 		road.get_node("sprite").play("default")
 	
@@ -51,9 +55,6 @@ func make_road():
 
 
 func _ready() -> void:
-	
-	
-	
 	make_road()
 	
 func _process(delta: float) -> void:
