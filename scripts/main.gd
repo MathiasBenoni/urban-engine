@@ -12,27 +12,38 @@ var meters_until_stop
 @onready var total = $viewport/HBoxContainer2/total
 
 
-
 func generate_pattern(length) -> Array:
-	var pattern = []
+	var temp_pattern = []
 	var zeros_since_last_one = 20
 	
-	for i in range(length):
+	for i in range(length - 1):  # Leave room for final 1
 		
 		if zeros_since_last_one >= 20:
 			# Randomly decide to place a 1 (30% chance)
 			if randf() > 0.7:
-				pattern.append(1)
+				temp_pattern.append(1)
 				zeros_since_last_one = 0 
 			else:
-				pattern.append(0)
+				temp_pattern.append(0)
 				zeros_since_last_one += 1
 		else:
 			# Must place a 0
-			pattern.append(0)
+			temp_pattern.append(0)
 			zeros_since_last_one += 1
-	print(pattern)
-	return pattern
+	
+	# Only add final 1 if we have enough zeros
+	if zeros_since_last_one >= 20:
+		temp_pattern.append(1)
+	else:
+		# Fill remaining with zeros to reach the spacing requirement
+		while zeros_since_last_one < 20:
+			temp_pattern.append(0)
+			zeros_since_last_one += 1
+		temp_pattern.append(1)
+	
+	print(temp_pattern)
+	return temp_pattern
+	
 
 var pattern = generate_pattern(100)
 
@@ -62,6 +73,13 @@ func make_road():
 func update_meters():
 	var count = 0
 	var index = roads_made - 2 # Offset for moved camera
+	
+	if index >= pattern.size() - 5:  # Generate new pattern 5 roads early
+		pattern = generate_pattern(100)
+		roads_made = 0
+		index = roads_made - 2
+		
+
 	while index < pattern.size():
 		
 		if pattern[index] == 1:
@@ -81,25 +99,28 @@ func _ready() -> void:
 
 var has_passed = false
 var toggle = false
+var previous_meters = -1
+
 func _process(delta: float) -> void:
-	
-	if meters_until_stop == 0 and has_passed == false:
-		if Globals.main_speed == 0 or toggle == true:
-			has_passed = true
-			print("Yes")
-			toggle = true
-			
-		elif has_passed == false and toggle == false:
+# Then your logic:
+	if meters_until_stop != 0 and previous_meters == 0:
+		# Just transitioned away from the stop line
+		if has_passed:
+			print("PASS")
 			has_passed = false
-			print("NO")
-			
-	elif meters_until_stop != 0 and has_passed == true:
-		print("PASS")
-		toggle = false
-	else:
-		has_passed = false
-		
-		
+			toggle = false
+		else:
+			print("GAME OVER")
+			toggle = true
+	elif meters_until_stop == 0 and Globals.main_speed == 0 and not has_passed:
+		# Stopped at the line
+		has_passed = true
+		toggle = true
+		print("Stopped")
+
+	previous_meters = meters_until_stop
+	
+	
 
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
