@@ -80,20 +80,27 @@ func _ready() -> void:
 
 
 var has_passed = false
-
+var toggle = false
 func _process(delta: float) -> void:
 	
 	if meters_until_stop == 0 and has_passed == false:
-		if Globals.main_speed == 0:
+		if Globals.main_speed == 0 or toggle == true:
 			has_passed = true
-		else:
+			print("Yes")
+			toggle = true
+			
+		elif has_passed == false and toggle == false:
 			has_passed = false
-	elif meters_until_stop != 0:
+			print("NO")
+			
+	elif meters_until_stop != 0 and has_passed == true:
+		print("PASS")
+		toggle = false
+	else:
 		has_passed = false
-	
-	print(has_passed)
 		
-	
+		
+
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
 		make_road()
@@ -120,7 +127,7 @@ func _process(delta: float) -> void:
 			Globals.main_speed = max_speed
 		
 	if Input.is_action_pressed("brake"):
-		print(Globals.main_speed)
+		
 		brake = true
 		
 	else:
