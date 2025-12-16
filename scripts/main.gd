@@ -6,9 +6,12 @@ var brake_force := 1000.0
 @onready var screen_size = get_viewport().get_visible_rect().size
 var road_list = []
 var roads_made := 0
+var meters_until_stop
 
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
+
+
 
 func generate_pattern(length) -> Array:
 	var pattern = []
@@ -68,14 +71,28 @@ func update_meters():
 	
 	meters.text = str(count)
 	total.text = str(int(total.text) + 1)
-
+	
+	meters_until_stop = count
 	
 func _ready() -> void:
 	make_road()
 	update_meters()
-	
+
+
+var has_passed = false
+
 func _process(delta: float) -> void:
 	
+	if meters_until_stop == 0 and has_passed == false:
+		if Globals.main_speed == 0:
+			has_passed = true
+		else:
+			has_passed = false
+	elif meters_until_stop != 0:
+		has_passed = false
+	
+	print(has_passed)
+		
 	
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
