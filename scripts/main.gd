@@ -7,6 +7,7 @@ var brake_force := 1000.0
 var road_list = []
 var roads_made := 0
 var meters_until_stop
+var pattern_lenght = 200
 
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
@@ -14,11 +15,11 @@ var meters_until_stop
 
 func generate_pattern(length) -> Array:
 	var temp_pattern = []
-	var zeros_since_last_one = 20
+	var min_zeros_between_ones = 50  # Variable for spacing requirement
+	var zeros_since_last_one = 0
 	
-	for i in range(length - 1):  # Leave room for final 1
-		
-		if zeros_since_last_one >= 20:
+	for i in range(length):
+		if zeros_since_last_one >= min_zeros_between_ones:
 			# Randomly decide to place a 1 (30% chance)
 			if randf() > 0.7:
 				temp_pattern.append(1)
@@ -30,16 +31,6 @@ func generate_pattern(length) -> Array:
 			# Must place a 0
 			temp_pattern.append(0)
 			zeros_since_last_one += 1
-	
-	# Only add final 1 if we have enough zeros
-	if zeros_since_last_one >= 20:
-		temp_pattern.append(1)
-	else:
-		# Fill remaining with zeros to reach the spacing requirement
-		while zeros_since_last_one < 20:
-			temp_pattern.append(0)
-			zeros_since_last_one += 1
-		temp_pattern.append(1)
 	
 	print(temp_pattern)
 	return temp_pattern
@@ -58,7 +49,7 @@ func make_road():
 		road.get_node("sprite").play("intersection")
 	
 	elif roads_made >= pattern.size():
-		pattern = generate_pattern(100)
+		pattern = generate_pattern(pattern_lenght)
 		roads_made = 0
 	else:
 		road.get_node("sprite").play("default")
@@ -75,7 +66,7 @@ func update_meters():
 	var index = roads_made - 2 # Offset for moved camera
 	
 	if index >= pattern.size() - 5:  # Generate new pattern 5 roads early
-		pattern = generate_pattern(100)
+		pattern = generate_pattern(pattern_lenght)
 		roads_made = 0
 		index = roads_made - 2
 		
@@ -102,7 +93,8 @@ var toggle = false
 var previous_meters = -1
 
 func _process(delta: float) -> void:
-# Then your logic:
+ 
+	# Check for if you have stopped
 	if meters_until_stop != 0 and previous_meters == 0:
 		# Just transitioned away from the stop line
 		if has_passed:
@@ -121,7 +113,6 @@ func _process(delta: float) -> void:
 	previous_meters = meters_until_stop
 	
 	
-
 	# Spawn new road when the last one reaches the threshold
 	if road_list[-1].position.y >= 800:
 		make_road()
