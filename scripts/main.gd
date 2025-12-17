@@ -12,11 +12,10 @@ var pattern_lenght = 200
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
 
-
 func generate_pattern(length) -> Array:
 	var temp_pattern = []
 	var min_zeros_between_ones = 50  # Variable for spacing requirement
-	var zeros_since_last_one = 0
+	var zeros_since_last_one = min_zeros_between_ones  # Start ready to place a 1
 	
 	for i in range(length):
 		if zeros_since_last_one >= min_zeros_between_ones:

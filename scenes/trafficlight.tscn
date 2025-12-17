@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://bdv38fhdhvf50"]
+
+[ext_resource type="Texture2D" uid="uid://b201gsn58mv6h" path="res://assets/trafficlight_green_temp.png" id="1_cyr2i"]
+[ext_resource type="Texture2D" uid="uid://cep0h6kkbykcb" path="res://assets/trafficlight_red_temp.png" id="2_xkknu"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yexni"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_cyr2i")
+}],
+"loop": true,
+"name": &"green",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_xkknu")
+}],
+"loop": true,
+"name": &"red",
+"speed": 5.0
+}]
+
+[node name="trafficlight" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_yexni")
+animation = &"red"

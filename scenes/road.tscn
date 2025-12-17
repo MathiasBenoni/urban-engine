@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://hlpvc5xnixpw"]
+[gd_scene load_steps=4 format=3 uid="uid://hlpvc5xnixpw"]
 
 [ext_resource type="Script" uid="uid://ddbjq0lhpyc40" path="res://scripts/road.gd" id="1_my2y2"]
 [ext_resource type="SpriteFrames" uid="uid://d25p64au0nvpl" path="res://scenes/road.tres" id="2_fy6l0"]
+[ext_resource type="PackedScene" uid="uid://bdv38fhdhvf50" path="res://scenes/trafficlight.tscn" id="3_fy6l0"]
 
 [node name="road" type="Node2D"]
 scale = Vector2(40, 40)
@@ -9,3 +10,16 @@ script = ExtResource("1_my2y2")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_fy6l0")
+animation = &"intersection"
+
+[node name="trafficlights" type="Node2D" parent="."]
+visible = false
+z_index = 10
+
+[node name="trafficlight" parent="trafficlights" instance=ExtResource("3_fy6l0")]
+position = Vector2(13.199997, 6.300001)
+scale = Vector2(0.2, 0.2)
+
+[node name="trafficlight2" parent="trafficlights" instance=ExtResource("3_fy6l0")]
+position = Vector2(-13.099998, -6.300001)
+scale = Vector2(0.2, 0.2)
