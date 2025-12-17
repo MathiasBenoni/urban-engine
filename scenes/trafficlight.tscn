@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bdv38fhdhvf50"]
+[gd_scene load_steps=5 format=3 uid="uid://bdv38fhdhvf50"]
 
 [ext_resource type="Texture2D" uid="uid://b201gsn58mv6h" path="res://assets/trafficlight_green_temp.png" id="1_cyr2i"]
+[ext_resource type="Script" uid="uid://cpf5kicmo0453" path="res://scripts/trafficlight.gd" id="1_xkknu"]
 [ext_resource type="Texture2D" uid="uid://cep0h6kkbykcb" path="res://assets/trafficlight_red_temp.png" id="2_xkknu"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yexni"]
@@ -23,7 +24,9 @@ animations = [{
 }]
 
 [node name="trafficlight" type="Node2D"]
+script = ExtResource("1_xkknu")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_yexni")
 animation = &"red"
+autoplay = "red"

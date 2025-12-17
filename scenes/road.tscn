@@ -13,13 +13,22 @@ sprite_frames = ExtResource("2_fy6l0")
 animation = &"intersection"
 
 [node name="trafficlights" type="Node2D" parent="."]
-visible = false
 z_index = 10
 
 [node name="trafficlight" parent="trafficlights" instance=ExtResource("3_fy6l0")]
-position = Vector2(13.199997, 6.300001)
+position = Vector2(13.2, 12.5)
 scale = Vector2(0.2, 0.2)
 
 [node name="trafficlight2" parent="trafficlights" instance=ExtResource("3_fy6l0")]
-position = Vector2(-13.099998, -6.300001)
+position = Vector2(-13.1, 12.5)
+scale = Vector2(0.2, 0.2)
+
+[node name="trafficlights_2" type="Node2D" parent="."]
+
+[node name="trafficlight" parent="trafficlights_2" instance=ExtResource("3_fy6l0")]
+position = Vector2(13.2, -6.5)
+scale = Vector2(0.2, 0.2)
+
+[node name="trafficlight2" parent="trafficlights_2" instance=ExtResource("3_fy6l0")]
+position = Vector2(-13.1, -6.5)
 scale = Vector2(0.2, 0.2)

@@ -65,3 +65,11 @@ layout_mode = 2
 size_flags_horizontal = 8
 theme_override_font_sizes/font_size = 100
 text = "0"
+
+[node name="trafficlight" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="roads" type="Node" parent="."]
+
+[connection signal="timeout" from="trafficlight" to="." method="_on_trafficlight_timeout"]

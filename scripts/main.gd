@@ -46,17 +46,24 @@ func make_road():
 	
 	if roads_made < pattern.size() and pattern[roads_made] == 1:
 		road.get_node("sprite").play("intersection")
+		road.get_node("trafficlights_2").visible = true
 	
 	elif roads_made >= pattern.size():
 		pattern = generate_pattern(pattern_lenght)
 		roads_made = 0
 	else:
 		road.get_node("sprite").play("default")
-	
+		road.get_node("trafficlights_2").visible = false
+		
+	if roads_made + 1 < pattern.size() and pattern[roads_made + 1] == 1:
+		road.get_node("trafficlights").visible = true
+	else:
+		road.get_node("trafficlights").visible = false
 	
 	roads_made += 1
-	
-	add_child(road)
+	road.name = "road" + str(meters_until_stop)
+	$roads.add_child(road)
+
 
 
 
@@ -76,7 +83,6 @@ func update_meters():
 			break
 		count += 1
 		index += 1
-	
 	meters.text = str(count)
 	total.text = str(int(total.text) + 1)
 	
@@ -108,6 +114,7 @@ func _process(delta: float) -> void:
 		has_passed = true
 		toggle = true
 		print("Stopped")
+		$trafficlight.start()
 
 	previous_meters = meters_until_stop
 	
@@ -143,3 +150,8 @@ func _process(delta: float) -> void:
 		
 	else:
 		brake = false
+
+
+func _on_trafficlight_timeout() -> void:
+	print("NOW")
+	get_tree().call_group("traffic_lights", "play", "green")
