@@ -8,6 +8,7 @@ var road_list = []
 var roads_made := 0
 var meters_until_stop
 var pattern_lenght = 200
+@onready var all_lights = get_tree().get_nodes_in_group("traffic_lights")
 
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
@@ -63,7 +64,9 @@ func make_road():
 	roads_made += 1
 	road.name = "road" + str(meters_until_stop)
 	$roads.add_child(road)
-
+	if all_lights.size() > 0:
+		for i in range(4):
+			all_lights[i].play("red")
 
 
 
