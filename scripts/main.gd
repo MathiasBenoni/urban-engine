@@ -6,8 +6,10 @@ var brake_force := 1000.0
 @onready var screen_size = get_viewport().get_visible_rect().size
 var road_list = []
 var roads_made := 0
-var meters_until_stop
+var meters_until_stop = 2
 var pattern_lenght = 200
+var safe = false
+var n := false
 @onready var all_lights = get_tree().get_nodes_in_group("traffic_lights")
 
 @onready var meters = $viewport/HBoxContainer/meters
@@ -15,11 +17,15 @@ var pattern_lenght = 200
 
 func generate_pattern(length) -> Array:
 	var temp_pattern = []
-	var min_zeros_between_ones = 50  # Variable for spacing requirement
+	var min_zeros_between_ones = 10  # Variable for spacing requirement
 	var zeros_since_last_one = min_zeros_between_ones  # Start ready to place a 1
 	
 	for i in range(length):
-		if zeros_since_last_one >= min_zeros_between_ones:
+		# Force 0s for the first 3 positions
+		if i < 3:
+			temp_pattern.append(0)
+			zeros_since_last_one += 1
+		elif zeros_since_last_one >= min_zeros_between_ones:
 			# Randomly decide to place a 1 (30% chance)
 			if randf() > 0.7:
 				temp_pattern.append(1)
@@ -31,6 +37,10 @@ func generate_pattern(length) -> Array:
 			# Must place a 0
 			temp_pattern.append(0)
 			zeros_since_last_one += 1
+	
+	# Ensure the last element is a 1
+	if temp_pattern.size() > 0 and temp_pattern[-1] != 1:
+		temp_pattern[-1] = 1
 	
 	print(temp_pattern)
 	return temp_pattern
@@ -64,8 +74,9 @@ func make_road():
 	roads_made += 1
 	road.name = "road" + str(meters_until_stop)
 	$roads.add_child(road)
-	if all_lights.size() > 0:
-		for i in range(4):
+	
+	if all_lights.size() > 0: # Check if list accually contains something
+		for i in range(4): # Loop trough the lights
 			all_lights[i].play("red")
 
 
@@ -105,12 +116,13 @@ func _process(delta: float) -> void:
 	# Check for if you have stopped
 	if meters_until_stop != 0 and previous_meters == 0:
 		# Just transitioned away from the stop line
-		if has_passed:
+		if has_passed and safe == true:
 			print("PASS")
 			has_passed = false
 			toggle = false
+			safe = false
 		else:
-			print("GAME OVER")
+			game_over()
 			toggle = true
 	elif meters_until_stop == 0 and Globals.main_speed == 0 and not has_passed:
 		# Stopped at the line
@@ -154,7 +166,13 @@ func _process(delta: float) -> void:
 	else:
 		brake = false
 
+func game_over():
+	if n == true:
+		print("GAME OVER")
+	else:
+		n = true
 
 func _on_trafficlight_timeout() -> void:
 	print("NOW")
+	safe = true
 	get_tree().call_group("traffic_lights", "play", "green")
