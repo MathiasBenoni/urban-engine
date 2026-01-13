@@ -4,11 +4,10 @@ var brake := false
 var random
 
 func _ready() -> void:
-	print($sprite.animation)
 	if $sprite.animation == "default":
-		$StaticBody2D/line.disabled = true
+		$Area2d/line.disabled = true
 	else:
-		$StaticBody2D/line.disabled = false
+		$Area2d/line.disabled = false
 	pass
 
 func _process(delta: float) -> void:
