@@ -1,6 +1,6 @@
 extends Node2D
 var brake = false
-var accel := 250.0  
+var accel := 500.0  
 var max_speed := 10000.0
 var brake_force := 1000.0
 @onready var screen_size = get_viewport().get_visible_rect().size
@@ -10,14 +10,14 @@ var meters_until_stop = 2
 var pattern_lenght = 200
 var safe = false
 var n := false
+var goal
 @onready var all_lights = get_tree().get_nodes_in_group("traffic_lights")
-
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
 
 func generate_pattern(length) -> Array:
 	var temp_pattern = []
-	var min_zeros_between_ones = 10  # Variable for spacing requirement
+	var min_zeros_between_ones = 25  # Variable for spacing requirement
 	var zeros_since_last_one = min_zeros_between_ones  # Start ready to place a 1
 	
 	for i in range(length):
@@ -81,6 +81,8 @@ func make_road():
 
 
 
+var distance_traveled = 1
+
 func update_meters():
 	var count = 0
 	var index = roads_made - 2 # Offset for moved camera
@@ -89,7 +91,6 @@ func update_meters():
 		pattern = generate_pattern(pattern_lenght)
 		roads_made = 0
 		index = roads_made - 2
-		
 
 	while index < pattern.size():
 		
@@ -98,14 +99,18 @@ func update_meters():
 		count += 1
 		index += 1
 	meters.text = str(count)
-	total.text = str(int(total.text) + 1)
+	distance_traveled += 1
+	total.text = str(goal - distance_traveled)
 	
 	meters_until_stop = count
 	
+	if distance_traveled == goal:
+		print("DONE")
+	
 func _ready() -> void:
+	goal = randi_range(100, 200)
 	make_road()
 	update_meters()
-
 
 var has_passed = false
 var toggle = false
@@ -113,6 +118,7 @@ var previous_meters = -1
 
 func _process(delta: float) -> void:
  
+	
 	# Check for if you have stopped
 	if meters_until_stop != 0 and previous_meters == 0:
 		# Just transitioned away from the stop line
@@ -130,7 +136,7 @@ func _process(delta: float) -> void:
 		toggle = true
 		print("Stopped")
 		$trafficlight.start()
-
+		
 	previous_meters = meters_until_stop
 	
 	

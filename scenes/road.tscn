@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://hlpvc5xnixpw"]
+[gd_scene load_steps=5 format=3 uid="uid://hlpvc5xnixpw"]
 
 [ext_resource type="Script" uid="uid://ddbjq0lhpyc40" path="res://scripts/road.gd" id="1_my2y2"]
 [ext_resource type="SpriteFrames" uid="uid://d25p64au0nvpl" path="res://scenes/road.tres" id="2_fy6l0"]
 [ext_resource type="PackedScene" uid="uid://bdv38fhdhvf50" path="res://scenes/trafficlight.tscn" id="3_fy6l0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fy6l0"]
+size = Vector2(32.050003, 0.6000001)
 
 [node name="road" type="Node2D"]
 scale = Vector2(40, 40)
@@ -32,3 +35,9 @@ scale = Vector2(0.2, 0.2)
 [node name="trafficlight2" parent="trafficlights_2" instance=ExtResource("3_fy6l0")]
 position = Vector2(-13.1, -6.5)
 scale = Vector2(0.2, 0.2)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="line" type="CollisionShape2D" parent="StaticBody2D"]
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_fy6l0")
