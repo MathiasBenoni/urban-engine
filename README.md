@@ -5,10 +5,10 @@ You can download this project by **cloning** this repo down to your device, down
 
 ## How to play
 
-- Play by **braking** at the right time, to _avoid_ driving a **red light**
+- Play by **braking** at the right time, to _avoid_ driving a <font color="red">red light</font>
 - You accelerate automatically, so controll your speed
 - **Steer** your way around the cars coming at you
-- Wait for **green light** before you drive further
+- Wait for <font color="green">green light</font> before you drive further
 - Finish levels
 
 ## Controls
