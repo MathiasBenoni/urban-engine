@@ -7,7 +7,7 @@ You can download this project by **cloning** this repo down to your device, down
 
 Alternatively, you can use the terminal to clone the repository down
 
-`git clone https://github.com/MathiasBenoni/urban-engine.git`
+```git clone https://github.com/MathiasBenoni/urban-engine.git~~~
 
 ## How to play
 
@@ -24,3 +24,4 @@ Alternatively, you can use the terminal to clone the repository down
 - A - Steer left
 - S - Drive backward
 - D - Steer right
+```
