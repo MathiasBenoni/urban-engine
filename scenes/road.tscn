@@ -11,8 +11,9 @@ size = Vector2(32.050003, 0.6000001)
 scale = Vector2(40, 40)
 script = ExtResource("1_my2y2")
 
-[node name="sprite" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_fy6l0")
+animation = &"intersection"
 
 [node name="trafficlights" type="Node2D" parent="."]
 z_index = 10

@@ -3,8 +3,10 @@ extends Node2D
 var brake := false
 var random
 
+
+
 func _ready() -> void:
-	if $sprite.animation == "default":
+	if $AnimatedSprite2D.animation == "default":
 		$Area2d/line.disabled = true
 	else:
 		$Area2d/line.disabled = false
@@ -13,12 +15,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	
 	position.y += Globals.main_speed * delta
-	
-	#if $sprite.animation == "intersection":
-		#$trafficlights.visible = true
-		#
-	#else:
-		#$trafficlights.visible = false
 
 	if Input.is_action_pressed("brake"):
 		brake = true

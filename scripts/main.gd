@@ -1,182 +1,201 @@
 extends Node2D
+
+# Movement
 var brake = false
 var accel := 500.0  
 var max_speed := 10000.0
 var brake_force := 1000.0
-@onready var screen_size = get_viewport().get_visible_rect().size
-var road_list = []
-var roads_made := 0
-var meters_until_stop = 2
-var pattern_lenght = 200
-var safe = false
-var n := false
-var goal
-@onready var all_lights = get_tree().get_nodes_in_group("traffic_lights")
+
+# Road scrolling
+var scroll_offset := 0.0
+var tile_height := 230.0
+
+# Intersection management
+var intersections = []  # Array of intersection nodes
+var next_intersection_spawn := 0.0  # Y position to spawn next intersection
+var min_gap := 25  # Minimum tiles between intersections
+
+# Game state
+var goal := 0
+var distance_traveled := 0
+var safe := false
+var has_passed := false
+var was_at_intersection := false
+var current_intersection = null  # Track which intersection we stopped for
+
 @onready var meters = $viewport/HBoxContainer/meters
 @onready var total = $viewport/HBoxContainer2/total
+@onready var player = $player  # Reference to your player node
+@onready var road_sprite = $Sprite2D  # Sprite2D for the road
 
-func generate_pattern(length) -> Array:
-	var temp_pattern = []
-	var min_zeros_between_ones = 25  # Variable for spacing requirement
-	var zeros_since_last_one = min_zeros_between_ones  # Start ready to place a 1
-	
-	for i in range(length):
-		# Force 0s for the first 3 positions
-		if i < 3:
-			temp_pattern.append(0)
-			zeros_since_last_one += 1
-		elif zeros_since_last_one >= min_zeros_between_ones:
-			# Randomly decide to place a 1 (30% chance)
-			if randf() > 0.7:
-				temp_pattern.append(1)
-				zeros_since_last_one = 0 
-			else:
-				temp_pattern.append(0)
-				zeros_since_last_one += 1
-		else:
-			# Must place a 0
-			temp_pattern.append(0)
-			zeros_since_last_one += 1
-	
-	# Ensure the last element is a 1
-	if temp_pattern.size() > 0 and temp_pattern[-1] != 1:
-		temp_pattern[-1] = 1
-	
-	print(temp_pattern)
-	return temp_pattern
-	
-
-var pattern = generate_pattern(100)
-
-func make_road():
-	var road_scene = preload("res://scenes/road.tscn")
-	var road = road_scene.instantiate()
-	road.position.x = 0
-	road.position.y = -230
-	road_list.append(road)
-	
-	if roads_made < pattern.size() and pattern[roads_made] == 1:
-		road.get_node("sprite").play("intersection")
-		road.get_node("trafficlights_2").visible = true
-	
-	elif roads_made >= pattern.size():
-		pattern = generate_pattern(pattern_lenght)
-		roads_made = 0
-	else:
-		road.get_node("sprite").play("default")
-		road.get_node("trafficlights_2").visible = false
-		
-	if roads_made + 1 < pattern.size() and pattern[roads_made + 1] == 1:
-		road.get_node("trafficlights").visible = true
-	else:
-		road.get_node("trafficlights").visible = false
-	
-	roads_made += 1
-	road.name = "road" + str(meters_until_stop)
-	$roads.add_child(road)
-	
-	if all_lights.size() > 0: # Check if list accually contains something
-		for i in range(4): # Loop trough the lights
-			all_lights[i].play("red")
-
-
-
-var distance_traveled = 1
-
-func update_meters():
-	var count = 0
-	var index = roads_made - 2 # Offset for moved camera
-	
-	if index >= pattern.size() - 5:  # Generate new pattern 5 roads early
-		pattern = generate_pattern(pattern_lenght)
-		roads_made = 0
-		index = roads_made - 2
-
-	while index < pattern.size():
-		
-		if pattern[index] == 1:
-			break
-		count += 1
-		index += 1
-	meters.text = str(count)
-	distance_traveled += 1
-	total.text = str(goal - distance_traveled)
-	
-	meters_until_stop = count
-	
-	if distance_traveled == goal:
-		print("DONE")
-	
 func _ready() -> void:
 	goal = randi_range(100, 200)
-	make_road()
-	update_meters()
+	
+	# Setup the road sprite for region scrolling
+	if road_sprite and road_sprite.texture:
+		road_sprite.region_enabled = true
+		var texture_height = road_sprite.texture.get_height()
+		var texture_width = road_sprite.texture.get_width()
+		# Make region tall enough to cover the screen with repeating texture
+		road_sprite.region_rect = Rect2(0, 0, texture_width, texture_height * 10)
+	
+	# Pre-spawn intersections
+	next_intersection_spawn = -tile_height * randf_range(3, 8)  # First one a few tiles up
+	for i in range(5):  # Spawn 5 intersections in advance
+		spawn_intersection()
+	
+	update_ui()
 
-var has_passed = false
-var toggle = false
-var previous_meters = -1
+func spawn_intersection():
+	var intersection_scene = preload("res://scenes/intersection.tscn")
+	var intersection = intersection_scene.instantiate()
+	
+	intersection.position.x = 0
+	intersection.position.y = next_intersection_spawn
+	
+	intersections.append(intersection)
+	$intersections.add_child(intersection)
+	
+	# Schedule next intersection spawn position
+	next_intersection_spawn -= tile_height * randf_range(min_gap, min_gap * 1.5)
 
 func _process(delta: float) -> void:
- 
-	
-	# Check for if you have stopped
-	if meters_until_stop != 0 and previous_meters == 0:
-		# Just transitioned away from the stop line
-		if has_passed and safe == true:
-			print("PASS")
-			has_passed = false
-			toggle = false
-			safe = false
-		else:
-			game_over()
-			toggle = true
-	elif meters_until_stop == 0 and Globals.main_speed == 0 and not has_passed:
-		# Stopped at the line
-		has_passed = true
-		toggle = true
-		print("Stopped")
-		$trafficlight.start()
-		
-	previous_meters = meters_until_stop
-	
-	
-	# Spawn new road when the last one reaches the threshold
-	if road_list[-1].position.y >= 800:
-		make_road()
-		update_meters()
-	while road_list.size() > 0 and road_list[0].position.y >= 4000:
-		
-		var old_road = road_list.pop_front()
-		old_road.queue_free()
-	
-	
-	
-	if brake == true:
-		
+	# Handle braking/acceleration
+	if Input.is_action_pressed("brake") or brake:
 		if Globals.main_speed >= 0:
 			Globals.main_speed -= brake_force * delta
 			if Globals.main_speed < 0:
 				Globals.main_speed = 0
 	else:
 		var speed_ratio = Globals.main_speed / max_speed
-		var acceleration_factor = 1.0 - (speed_ratio * speed_ratio)  # Exponential falloff
+		var acceleration_factor = 1.0 - (speed_ratio * speed_ratio)
 		Globals.main_speed += accel * acceleration_factor * delta
-		
 		if Globals.main_speed > max_speed:
 			Globals.main_speed = max_speed
-		
-	if Input.is_action_pressed("brake"):
-		
-		brake = true
-		
-	else:
-		brake = false
+	
+	var movement = Globals.main_speed * delta
+	
+	# Scroll the road sprite by changing region offset (at half speed)
+	scroll_offset += movement * 0.3
+	if road_sprite and road_sprite.texture:
+		var texture_height = road_sprite.texture.get_height()
+		var region = road_sprite.region_rect
+		# Scroll in the opposite direction (subtract instead of add)
+		region.position.y = fmod(-scroll_offset, texture_height)
+		if region.position.y < 0:
+			region.position.y += texture_height
+		road_sprite.region_rect = region
+	
+	# Move intersections
+	for intersection in intersections:
+		intersection.position.y += movement
+	
+	# Check intersection logic
+	check_intersection_collision()
+	
+	# Cleanup old intersections and spawn new ones
+	var i = 0
+	while i < intersections.size():
+		if intersections[i].position.y > 4000:
+			intersections[i].queue_free()
+			intersections.remove_at(i)
+		else:
+			i += 1
+	
+	# Spawn more intersections if needed
+	while intersections.size() < 5:
+		spawn_intersection()
+	
+	# Update UI
+	distance_traveled += movement / tile_height
+	update_ui()
+	
+	brake = Input.is_action_pressed("brake")
+
+	if distance_traveled >= goal:
+		print("DONE")
+
+func get_distance_to_next_intersection() -> float:
+	var closest_distance = -99999.0  # Start with very negative number
+	
+	for intersection in intersections:
+		var dist = intersection.global_position.y - player.global_position.y
+		# Look for intersections ABOVE the player (negative distance, but closest to 0)
+		if dist < 0 and dist > closest_distance:
+			closest_distance = dist
+	
+	if closest_distance == -99999.0:
+		return 0.0  # Return 0 if no intersection found
+	
+	return abs(closest_distance) / tile_height  # Return positive distance for display
+
+func get_next_intersection():
+	var closest_intersection = null
+	var closest_distance = -99999.0
+	
+	for intersection in intersections:
+		var dist = intersection.global_position.y - player.global_position.y
+		# Look for intersections ABOVE the player (negative distance, closest to 0)
+		if dist < 0 and dist > closest_distance:
+			closest_distance = dist
+			closest_intersection = intersection
+	
+	return closest_intersection
+
+func check_intersection_collision():
+	var next_inter = get_next_intersection()
+	
+	if next_inter == null:
+		return
+	
+	# If this is a new intersection, reset has_passed
+	if current_intersection != next_inter:
+		has_passed = false
+		safe = false  # Reset safe flag for new intersection
+		current_intersection = next_inter
+	
+	var distance = next_inter.global_position.y - player.global_position.y
+	# distance is NEGATIVE because intersection is ABOVE player
+	
+	# Stopping zone: 0.5-3 tiles before (above) the intersection
+	var in_stopping_zone = distance < -tile_height * 0.5 and distance > -tile_height * 3.0
+	# Danger zone: at or past the intersection (within 0.5 tiles above)
+	var in_danger_zone = distance >= -tile_height * 0.5
+	
+	# Check if player stops in the stopping zone (and remember it)
+	if in_stopping_zone and Globals.main_speed < 10 and not has_passed:
+		has_passed = true
+		print("Stopped correctly at distance: " + str(abs(distance) / tile_height) + " tiles")
+		$trafficlight.start()
+	
+	# If we enter the danger zone
+	if in_danger_zone:
+		if not has_passed:
+			# Never stopped - FAIL
+			print("Ran intersection! Distance: " + str(abs(distance) / tile_height) + " tiles")
+			game_over()
+			return
+		elif has_passed and not safe:
+			# Stopped but light hasn't turned green yet - FAIL
+			print("Left before green light!")
+			game_over()
+			return
+	
+	# If we've passed the intersection completely (1 tile behind/below)
+	if distance > tile_height * 1.0 and has_passed and safe:
+		print("PASS - Made it through!")
+		has_passed = false
+		safe = false
+		current_intersection = null  # Clear current intersection
+
+func update_ui():
+	var dist = get_distance_to_next_intersection()
+	meters.text = str(max(0, int(dist)))
+	total.text = str(max(0, int(goal - distance_traveled)))
 
 func game_over():
-	if n == true:
-		print("GAME OVER")
-	else:
-		n = true
+	print("GAME OVER")
+	get_tree().paused = true
 
 func _on_trafficlight_timeout() -> void:
 	print("NOW")

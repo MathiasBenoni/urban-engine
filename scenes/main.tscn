@@ -1,14 +1,23 @@
-[gd_scene load_steps=5 format=3 uid="uid://dt7tmqrk6vt"]
+[gd_scene load_steps=7 format=3 uid="uid://dt7tmqrk6vt"]
 
 [ext_resource type="Script" uid="uid://bfr0ac0m4h11" path="res://scripts/main.gd" id="1_jyhfs"]
+[ext_resource type="Texture2D" uid="uid://der76pwku47gf" path="res://assets/road-temp.png" id="2_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://bs2hucd20aekb" path="res://scenes/car.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://cbcw40y62pg6x" path="res://scenes/player.tscn" id="3_jyhfs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sugp2"]
 size = Vector2(132, 1710)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
+size = Vector2(1551, 189.5)
+
 [node name="main" type="Node2D"]
 script = ExtResource("1_jyhfs")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_repeat = 2
+scale = Vector2(40, 40)
+texture = ExtResource("2_jyhfs")
 
 [node name="background" type="CanvasLayer" parent="."]
 layer = -1
@@ -24,13 +33,12 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="car" parent="." instance=ExtResource("2_sugp2")]
-position = Vector2(-468, 2061)
+position = Vector2(-468, 428)
 
 [node name="player" parent="." instance=ExtResource("3_jyhfs")]
-position = Vector2(300, 2052)
+position = Vector2(300, 345)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, 1600)
 
 [node name="viewport" type="CanvasLayer" parent="."]
 
@@ -78,11 +86,21 @@ one_shot = true
 [node name="barriers" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="barriers"]
-position = Vector2(-702, 1610)
+position = Vector2(-702, 27)
 shape = SubResource("RectangleShape2D_sugp2")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="barriers"]
-position = Vector2(709, 1627)
+position = Vector2(714, 39)
 shape = SubResource("RectangleShape2D_sugp2")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="barriers"]
+position = Vector2(-21, 908)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="barriers"]
+position = Vector2(28, -911)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="intersections" type="Node2D" parent="."]
 
 [connection signal="timeout" from="trafficlight" to="." method="_on_trafficlight_timeout"]

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn00s0qpgtl54"]
+
+[ext_resource type="Texture2D" uid="uid://ci2mi2fisb26s" path="res://assets/intersection_no_road.png" id="1_nor1w"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(40, 40)
+texture = ExtResource("1_nor1w")
